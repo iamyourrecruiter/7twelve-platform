@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.api import candidates, companies, blogs, contact, admin
+from app.api import candidates, companies, blogs, contact, admin, ai
 from app.database import engine
 from app.database import Base
 from app.routes import (
@@ -27,7 +27,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:7000"],  # React dev server
+    allow_origins=["http://localhost:7000", "http://127.0.0.1:5173", "http://127.0.0.1:3000", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,6 +49,7 @@ app.include_router(blog_routes.router)
 app.include_router(contact_routes.router)
 app.include_router(admin_routes.router)
 app.include_router(market.router, prefix="/api/market", tags=["Market"])
+app.include_router(ai.router, prefix="/api/ai", tags=["AI"])
 
 
 @app.on_event("startup")

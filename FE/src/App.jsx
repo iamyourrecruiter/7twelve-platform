@@ -1,3 +1,4 @@
+import './styles/premium.css';
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/common/Header';
@@ -17,6 +18,10 @@ import ResumePage from './pages/blogs/ResumePage';
 import RemoteWorkPage from './pages/blogs/RemoteWorkPage';
 import MarketPage from './pages/MarketPage';
 import JobUpdatesPage from './pages/JobUpdatesPage';
+import AIResumeBuilder from './pages/AIResumeBuilder';
+import AIResumeAnalyzer from './pages/AIResumeAnalyzer';
+import AISalaryCalculator from './pages/AISalaryCalculator';
+import AIJobListings from './pages/AIJobListings';
 
 // Import Google Fonts
 const loadFonts = () => {
@@ -47,6 +52,10 @@ function App() {
           <Route path="/blog/remote-work" element={<RemoteWorkPage />} />
           <Route path="/market" element={<MarketPage />} />
           <Route path="/jobs" element={<JobUpdatesPage />} />
+          <Route path="/ai/resume-builder" element={<AIResumeBuilder />} />
+          <Route path="/ai/resume-analyzer" element={<AIResumeAnalyzer />} />
+          <Route path="/ai/salary" element={<AISalaryCalculator />} />
+          <Route path="/ai/jobs" element={<AIJobListings />} />
           <Route path="/submit-blog" element={<BlogSubmitPage />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/contact" element={<ContactPage />} />

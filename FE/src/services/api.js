@@ -224,9 +224,38 @@ export const marketAPI = {
   },
   getSummary: async (queryString = '') => {
     return apiCall(`/market/summary${queryString}`);
-  }
+  },
   generate: async (queryString = '') => {
     return apiCall(`/market/generate${queryString}`);
+  }
+};
+
+// AI / Tools APIs (uses backend /api/ai endpoints)
+export const aiAPI = {
+  buildResume: async (payload) => {
+    return apiCall('/ai/resume/build', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  },
+  analyzeResume: async (payload) => {
+    return apiCall('/ai/resume/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  },
+  salaryCalc: async (payload) => {
+    return apiCall('/ai/salary/calc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  },
+  getJobs: async (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiCall(`/ai/jobs?${qs}`);
   }
 };
 
@@ -236,5 +265,6 @@ export default {
   blogAPI,
   contactAPI,
   adminAPI,
-  marketAPI
+  marketAPI,
+  aiAPI
 };

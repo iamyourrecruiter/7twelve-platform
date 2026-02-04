@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+/* Slide + Fade animation for hero text */
+/* Typewriter typing animation */
+@keyframes typing {
+  /* Job Search */
+  0%, 20% { content: ""; }
+  2% { content: "J"; }
+  4% { content: "Jo"; }
+  6% { content: "Job"; }
+  8% { content: "Job "; }
+  10% { content: "Job S"; }
+  12% { content: "Job Se"; }
+  14% { content: "Job Sea"; }
+  16% { content: "Job Sear"; }
+  18% { content: "Job Search"; }
+
+  /* Advertising */
+  30%, 50% { content: ""; }
+  32% { content: "A"; }
+  34% { content: "Ad"; }
+  36% { content: "Adv"; }
+  38% { content: "Adve"; }
+  40% { content: "Adver"; }
+  42% { content: "Advert"; }
+  44% { content: "Adverti"; }
+  46% { content: "Advertis"; }
+  48% { content: "Advertising"; }
+
+  /* Recruitment */
+  60%, 85% { content: ""; }
+  62% { content: "R"; }
+  64% { content: "Re"; }
+  66% { content: "Rec"; }
+  68% { content: "Recr"; }
+  70% { content: "Recru"; }
+  72% { content: "Recruit"; }
+  74% { content: "Recruitm"; }
+  76% { content: "Recruitme"; }
+  78% { content: "Recruitmen"; }
+  80% { content: "Recruitment"; }
+}
+
+/* Blinking cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typewriter {
+  --caret: currentColor;
+}
+
+.typewriter::before {
+  content: "";
+  animation: typing 8s steps(1) infinite;
+}
+
+.typewriter::after {
+  display: none;
+}
+
+
+
+@keyframes scroll {
+  0% { 
+    transform: translateX(0); 
+  }
+  100% { 
+    transform: translateX(-50%); 
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Faster scroll animation for partners */
+@keyframes scroll-fast {
+  0% { 
+    transform: translateX(0); 
+  }
+  100% { 
+    transform: translateX(-50%); 
+  }
+}
+
+.animate-scroll-fast {
+  animation: scroll-fast 40s linear infinite;
+}
+
+.animate-scroll-fast:hover {
+  animation-play-state: paused;
+}
+
+/* Font classes */
+.font-alike {
+  font-family: 'Alike', serif;
+}
+
+.font-raleway {
+  font-family: 'Raleway', sans-serif;
+}
+
+/* Utility classes */
+.grayscale-hover {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.grayscale-hover:hover {
+  filter: grayscale(0%);
+}

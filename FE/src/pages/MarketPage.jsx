@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import api from '../services/api';
 
 const MarketPage = () => {
@@ -6,22 +6,45 @@ const MarketPage = () => {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('jobs OR hiring OR recruitment');
 
+  const evtRef = useRef(null);
+  const [retry, setRetry] = useState(0);
+  const [summaries, setSummaries] = useState({});
+
   useEffect(() => {
     fetchNews();
-    // setup SSE for live updates
-    const evtSource = new EventSource((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000') + '/api/market/stream');
-    evtSource.onmessage = (e) => {
-      try {
-        const payload = JSON.parse(e.data);
-        setNews(payload.results || []);
-      } catch (err) {
-        console.error('SSE parse error', err);
+    let mounted = true;
+
+    const connect = () => {
+      if (evtRef.current) {
+        try { evtRef.current.close(); } catch(e) {}
       }
+      const url = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000') + '/api/market/stream';
+      const s = new EventSource(url);
+      evtRef.current = s;
+      s.onmessage = (e) => {
+        try {
+          const payload = JSON.parse(e.data);
+          if (mounted) setNews(payload.results || []);
+        } catch (err) {
+          console.error('SSE parse error', err);
+        }
+      };
+      s.onerror = () => {
+        // exponential backoff reconnect
+        try { s.close(); } catch(e) {}
+        const next = Math.min(6, retry + 1);
+        setRetry(next);
+        const delay = Math.pow(2, next) * 1000;
+        setTimeout(() => connect(), delay);
+      };
     };
-    evtSource.onerror = () => {
-      evtSource.close();
+
+    connect();
+    return () => {
+      mounted = false;
+      if (evtRef.current) try { evtRef.current.close(); } catch(e) {}
     };
-    return () => evtSource.close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchNews = async (q = query) => {
@@ -34,6 +57,18 @@ const MarketPage = () => {
       setNews([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGenerate = async (item) => {
+    if (!item.link) return;
+    if (summaries[item.link]) return; // cached locally
+    try {
+      const res = await api.marketAPI.generate(`?url=${encodeURIComponent(item.link)}&max_tokens=150`);
+      setSummaries(prev => ({ ...prev, [item.link]: res.summary || 'No summary available' }));
+    } catch (err) {
+      console.error(err);
+      setSummaries(prev => ({ ...prev, [item.link]: 'Error generating summary' }));
     }
   };
 
@@ -54,12 +89,21 @@ const MarketPage = () => {
           <div className="grid md:grid-cols-2 gap-6">
             {news.map((n, idx) => (
               <article key={idx} className="border rounded-lg p-4">
-                <a href={n.link} target="_blank" rel="noreferrer" className="text-lg font-semibold text-[#161a5a] hover:underline">{n.title}</a>
+                <div className="flex justify-between items-start">
+                  <a href={n.link} target="_blank" rel="noreferrer" className="text-lg font-semibold text-[#161a5a] hover:underline">{n.title}</a>
+                  <button onClick={() => handleGenerate(n)} className="ml-4 px-3 py-1 bg-[#8b0000] text-white rounded-md text-sm">Summarize</button>
+                </div>
                 <p className="text-sm text-gray-600 mt-2">{n.description}</p>
                 <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
                   <span>{n.source}</span>
                   <span>{n.pubDate}</span>
                 </div>
+                {summaries[n.link] && (
+                  <div className="mt-3 p-3 bg-gray-50 rounded border">
+                    <strong className="block mb-2">AI Summary</strong>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{summaries[n.link]}</p>
+                  </div>
+                )}
               </article>
             ))}
           </div>

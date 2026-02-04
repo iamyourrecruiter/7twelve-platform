@@ -15,3 +15,4 @@ feedparser==6.0.10
 beautifulsoup4==4.12.2
 sumy==0.10.0
 sse-starlette==0.0.8
+openai==1.32.0

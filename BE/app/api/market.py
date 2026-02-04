@@ -11,6 +11,15 @@ from app.services.market_cache import get_cached_news
 from fastapi.responses import StreamingResponse
 import json
 import asyncio
+OPENAI_KEY = os.getenv("OPENAI_API_KEY")
+if OPENAI_KEY:
+    try:
+        import openai
+        openai.api_key = OPENAI_KEY
+    except Exception:
+        openai = None
+else:
+    openai = None
 
 router = APIRouter()
 
@@ -191,6 +200,29 @@ def summarize_text(text: str, sentences_count: int = 3):
     return "\n".join([str(sent) for sent in summary])
 
 
+async def _generate_with_openai(text: str, max_tokens: int = 150):
+    if not openai:
+        return None
+
+    def call_openai():
+        return openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": f"Summarize the following text in 3 concise bullet points:\n\n{text}"}],
+            max_tokens=max_tokens,
+            temperature=0.2,
+        )
+
+    loop = asyncio.get_event_loop()
+    try:
+        resp = await loop.run_in_executor(None, call_openai)
+        choices = resp.get("choices", [])
+        if choices:
+            return choices[0].get("message", {}).get("content")
+    except Exception:
+        return None
+    return None
+
+
 @router.get("/summary")
 async def summarize_url(url: str = Query(..., description="URL to summarize"), sentences: int = 3):
     """
@@ -217,3 +249,33 @@ async def summarize_url(url: str = Query(..., description="URL to summarize"), s
 
     summary = summarize_text(plain, sentences_count=sentences)
     return {"summary": summary}
+
+
+@router.get('/generate')
+async def generate_summary(url: str = Query(..., description="URL to summarize using LLM"), max_tokens: int = 150):
+    """Generate a short AI summary using OpenAI if configured, else fallback to extractive summary."""
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            r = await client.get(url)
+            if r.status_code != 200:
+                raise HTTPException(status_code=400, detail="Failed to fetch URL")
+            text = r.text
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(text, "html.parser")
+    for script in soup(["script", "style"]):
+        script.decompose()
+    plain = soup.get_text(separator="\n")
+    if len(plain) > 30000:
+        plain = plain[:30000]
+
+    if openai:
+        ai_summary = await _generate_with_openai(plain, max_tokens=max_tokens)
+        if ai_summary:
+            return {"summary": ai_summary, "source": "openai"}
+
+    # fallback
+    summary = summarize_text(plain, sentences_count=3)
+    return {"summary": summary, "source": "extractive"}

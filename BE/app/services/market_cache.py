@@ -9,6 +9,8 @@ CACHE: Dict[str, Any] = {
 }
 
 POLL_INTERVAL = int(os.getenv("MARKET_POLL_INTERVAL", "60"))  # seconds
+# maximum number of cached items
+CACHE_MAX = int(os.getenv("MARKET_CACHE_SIZE", "200"))
 
 async def _poll_once():
     """Fetch latest market news from the market API helper functions (server-side)"""
@@ -36,7 +38,8 @@ async def _poll_once():
         # sort
         deduped.sort(key=lambda x: x.get("pubDate") or "", reverse=True)
 
-        CACHE["news"] = deduped
+        # enforce cache size limit
+        CACHE["news"] = deduped[:CACHE_MAX]
         import datetime
         CACHE["updated_at"] = datetime.datetime.utcnow().isoformat()
     except Exception:

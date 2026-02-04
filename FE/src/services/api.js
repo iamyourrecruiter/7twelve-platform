@@ -212,13 +212,7 @@ export const adminAPI = {
   }
 };
 
-export default {
-  candidateAPI,
-  companyAPI,
-  blogAPI,
-  contactAPI,
-  adminAPI
-};
+// (exports consolidated at end)
 
 // Market APIs (backend endpoints at /api/market)
 export const marketAPI = {
@@ -230,6 +224,9 @@ export const marketAPI = {
   },
   getSummary: async (queryString = '') => {
     return apiCall(`/market/summary${queryString}`);
+  }
+  generate: async (queryString = '') => {
+    return apiCall(`/market/generate${queryString}`);
   }
 };
 

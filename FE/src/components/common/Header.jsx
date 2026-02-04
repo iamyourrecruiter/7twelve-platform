@@ -66,6 +66,12 @@ const Header = () => {
           <Link to="/blog" className={`font-raleway font-medium transition-colors ${
             isActive('/blog') ? 'text-[#161a5a]' : 'text-gray-600 hover:text-[#161a5a]'
           }`}>Blog</Link>
+          <Link to="/market" className={`font-raleway font-medium transition-colors ${
+            isActive('/market') ? 'text-[#161a5a]' : 'text-gray-600 hover:text-[#161a5a]'
+          }`}>Market</Link>
+          <Link to="/jobs" className={`font-raleway font-medium transition-colors ${
+            isActive('/jobs') ? 'text-[#161a5a]' : 'text-gray-600 hover:text-[#161a5a]'
+          }`}>Jobs</Link>
         </nav>
 
         {/* CTA Button */}

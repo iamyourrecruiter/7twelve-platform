@@ -219,3 +219,25 @@ export default {
   contactAPI,
   adminAPI
 };
+
+// Market APIs (backend endpoints at /api/market)
+export const marketAPI = {
+  getNews: async (queryString = '') => {
+    return apiCall(`/market/news${queryString}`);
+  },
+  getRss: async (queryString = '') => {
+    return apiCall(`/market/rss${queryString}`);
+  },
+  getSummary: async (queryString = '') => {
+    return apiCall(`/market/summary${queryString}`);
+  }
+};
+
+export default {
+  candidateAPI,
+  companyAPI,
+  blogAPI,
+  contactAPI,
+  adminAPI,
+  marketAPI
+};

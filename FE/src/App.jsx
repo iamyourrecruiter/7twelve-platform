@@ -15,6 +15,8 @@ import AllJobsPage from './pages/Alljobspage';
 import InterviewTipsPage from './pages/blogs/InterviewTipsPage';
 import ResumePage from './pages/blogs/ResumePage';
 import RemoteWorkPage from './pages/blogs/RemoteWorkPage';
+import MarketPage from './pages/MarketPage';
+import JobUpdatesPage from './pages/JobUpdatesPage';
 
 // Import Google Fonts
 const loadFonts = () => {
@@ -43,6 +45,8 @@ function App() {
           <Route path="/blog/interview-tips" element={<InterviewTipsPage />} />
           <Route path="/blog/winning-resume" element={<ResumePage />} />
           <Route path="/blog/remote-work" element={<RemoteWorkPage />} />
+          <Route path="/market" element={<MarketPage />} />
+          <Route path="/jobs" element={<JobUpdatesPage />} />
           <Route path="/submit-blog" element={<BlogSubmitPage />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/contact" element={<ContactPage />} />

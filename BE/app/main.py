@@ -12,6 +12,7 @@ from app.routes import (
     contact_routes,
     admin_routes
 )
+from app.api import market
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -46,6 +47,7 @@ app.include_router(company_routes.router)
 app.include_router(blog_routes.router)
 app.include_router(contact_routes.router)
 app.include_router(admin_routes.router)
+app.include_router(market.router, prefix="/api/market", tags=["Market"])
 
 
 

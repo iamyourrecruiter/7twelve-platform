@@ -8,6 +8,20 @@ const MarketPage = () => {
 
   useEffect(() => {
     fetchNews();
+    // setup SSE for live updates
+    const evtSource = new EventSource((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000') + '/api/market/stream');
+    evtSource.onmessage = (e) => {
+      try {
+        const payload = JSON.parse(e.data);
+        setNews(payload.results || []);
+      } catch (err) {
+        console.error('SSE parse error', err);
+      }
+    };
+    evtSource.onerror = () => {
+      evtSource.close();
+    };
+    return () => evtSource.close();
   }, []);
 
   const fetchNews = async (q = query) => {

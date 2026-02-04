@@ -13,6 +13,7 @@ from app.routes import (
     admin_routes
 )
 from app.api import market
+from app.services.market_cache import start_background_loop, stop_background_loop
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -48,6 +49,17 @@ app.include_router(blog_routes.router)
 app.include_router(contact_routes.router)
 app.include_router(admin_routes.router)
 app.include_router(market.router, prefix="/api/market", tags=["Market"])
+
+
+@app.on_event("startup")
+async def startup_event():
+    # start background polling for market data
+    await start_background_loop(app)
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await stop_background_loop(app)
 
 
 

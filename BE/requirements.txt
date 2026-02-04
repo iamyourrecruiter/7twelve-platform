@@ -14,3 +14,4 @@ httpx==0.24.1
 feedparser==6.0.10
 beautifulsoup4==4.12.2
 sumy==0.10.0
+sse-starlette==0.0.8

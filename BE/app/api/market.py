@@ -7,6 +7,10 @@ import feedparser
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
+from app.services.market_cache import get_cached_news
+from fastapi.responses import StreamingResponse
+import json
+import asyncio
 
 router = APIRouter()
 
@@ -156,6 +160,28 @@ async def fetch_rss(feed_url: str = Query(..., description="RSS/Atom feed URL"),
         })
 
     return {"count": len(entries), "entries": entries}
+
+
+@router.get("/cache")
+async def get_cache(limit: int = 50):
+    """Return cached market news maintained by background poller."""
+    data = get_cached_news(limit=limit)
+    return {"count": len(data), "results": data}
+
+
+@router.get('/stream')
+async def stream_updates():
+    """Server-sent events streaming of cached updates. Clients can connect to receive JSON payloads."""
+
+    async def event_generator():
+        while True:
+            data = get_cached_news(limit=50)
+            payload = {"results": data}
+            text = f"data: {json.dumps(payload)}\n\n"
+            yield text.encode('utf-8')
+            await asyncio.sleep(int(os.getenv('MARKET_POLL_INTERVAL', '60')))
+
+    return StreamingResponse(event_generator(), media_type='text/event-stream')
 
 
 def summarize_text(text: str, sentences_count: int = 3):

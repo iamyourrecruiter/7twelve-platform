@@ -1,15 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BlogCard = ({ blog }) => {
-  const handleClick = () => {
+  const navigate = useNavigate();
+
+  const handleReadMore = () => {
     if (blog.link && blog.link !== '#') {
       window.open(blog.link, '_blank');
+    } else if (blog.internalLink) {
+      navigate(blog.internalLink);
     }
   };
 
   return (
     <div 
-      onClick={handleClick}
       className={`bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 overflow-hidden cursor-pointer ${
         blog.featured ? 'ring-2 ring-[#8b0000]' : ''
       }`}
@@ -31,7 +35,10 @@ const BlogCard = ({ blog }) => {
         </div>
         <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
           <span className="text-sm font-raleway text-gray-500">By {blog.author}</span>
-          <button className="px-4 py-2 bg-[#161a5a] text-white font-raleway rounded-lg hover:bg-[#0d0f3a] transition-all text-sm">
+          <button 
+            onClick={handleReadMore}
+            className="px-4 py-2 bg-[#161a5a] text-white font-raleway rounded-lg hover:bg-[#0d0f3a] transition-all text-sm"
+          >
             Read more →
           </button>
         </div>

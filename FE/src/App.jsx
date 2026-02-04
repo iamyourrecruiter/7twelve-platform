@@ -12,6 +12,9 @@ import BlogSubmitPage from './pages/BlogSubmitPage';
 import AdminPanel from './pages/AdminPanel';
 import ContactPage from './pages/ContactPage';
 import AllJobsPage from './pages/Alljobspage';
+import InterviewTipsPage from './pages/blogs/InterviewTipsPage';
+import ResumePage from './pages/blogs/ResumePage';
+import RemoteWorkPage from './pages/blogs/RemoteWorkPage';
 
 // Import Google Fonts
 const loadFonts = () => {
@@ -37,6 +40,9 @@ function App() {
           <Route path="/for-companies" element={<ForCompaniesPage />} />
           {/* <Route path="/services" element={<ServicesPage />} /> */}
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/interview-tips" element={<InterviewTipsPage />} />
+          <Route path="/blog/winning-resume" element={<ResumePage />} />
+          <Route path="/blog/remote-work" element={<RemoteWorkPage />} />
           <Route path="/submit-blog" element={<BlogSubmitPage />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/contact" element={<ContactPage />} />

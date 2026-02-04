@@ -11,6 +11,7 @@ const BlogPage = () => {
       image: "📝",
       source: "Internal Blog",
       link: "#",
+      internalLink: "/blog/interview-tips",
       featured: true,
       author: "7 Twelve Team",
       date: "2026-01-25"
@@ -21,7 +22,8 @@ const BlogPage = () => {
       description: "Learn the secrets to creating a resume that stands out from the crowd.",
       image: "📄",
       source: "Medium",
-      link: "https://medium.com",
+      link: "#",
+      internalLink: "/blog/winning-resume",
       featured: false,
       author: "Career Expert",
       date: "2026-01-20"
@@ -32,7 +34,8 @@ const BlogPage = () => {
       description: "Tips and tools for maximizing productivity while working from home.",
       image: "💻",
       source: "LinkedIn",
-      link: "https://linkedin.com",
+      link: "#",
+      internalLink: "/blog/remote-work",
       featured: true,
       author: "HR Professional",
       date: "2026-01-15"
